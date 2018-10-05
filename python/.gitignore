@@ -1,1 +1,6 @@
+# temp files
 *.pyc
+*~
+
+# output files
+*.png

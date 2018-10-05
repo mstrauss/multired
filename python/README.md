@@ -39,10 +39,21 @@ Please consider citing those papers if you use that data set in a
 scientific work.
 
 
-## Requirements
+## Dependencies
 
-Python 2.x or 3.x with
+See [Pipfile](Pipfile) and [Pipfile.lock](Pipfile.lock).
 
-    matplotlib==3.0.0
-    numpy==1.15.2
-    scipy==1.1.0
+Install with
+
+```bash
+pipenv install --dev
+```
+
+## Test
+
+To run the tests use
+
+```bash
+cd python
+pipenv run env PYTHONPATH=. pytest
+```

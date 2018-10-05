@@ -41,10 +41,12 @@
 
 import copy
 import math
+import os
 import sys
 
 import matplotlib
 matplotlib.use('agg')
+import matplotlib.pyplot as plt
 
 import numpy as np
 
@@ -215,6 +217,7 @@ class multiplex_red:
         self.verb = verbose
         self.cuts = None
         self.cuts_approx = None
+        dirname = os.path.dirname(multiplexfile)
         try:
             with open(multiplexfile, "r") as lines:
                 for l in lines:
@@ -222,7 +225,8 @@ class multiplex_red:
                         sys.stderr.write(
                             "Loading layer %d from file %s"
                             % (len(self.layers), l))
-                    A = layer(l.strip(" \n"))
+                    layerfile = os.path.join(dirname, l.strip(" \n"))
+                    A = layer(layerfile)
                     # if A.N > self.N:
                     #    self.N = A.N+1
                     self.layers.append(A)
@@ -473,7 +477,7 @@ class multiplex_red:
             j += 1
             self.cuts.append(copy.deepcopy(cur_part))
         self.cuts.append(copy.deepcopy(cur_part))
-        return zip(self.q_vals, self.cuts)
+        return list(zip(self.q_vals, self.cuts))
 
     def compute_partitions_approx(self):
         if (self.verb):
@@ -505,7 +509,7 @@ class multiplex_red:
             j += 1
             self.cuts_approx.append(copy.deepcopy(cur_part))
         self.cuts_approx.append(copy.deepcopy(cur_part))
-        return zip(self.q_vals_approx, self.cuts_approx)
+        return list(zip(self.q_vals_approx, self.cuts_approx))
 
     def draw_dendrogram(self, force=False,
                         saveas='dendrogram.png'):
@@ -515,8 +519,10 @@ class multiplex_red:
                     "Please call reduce() first or specify 'force=True'")
             else:
                 self.reduce()
+
+        plt.close('all')
         dendrogram(self.Z, no_plot=False)
-        matplotlib.pyplot.savefig(saveas)
+        plt.savefig(saveas)
 
     def draw_dendrogram_approx(self, force=False,
                                saveas='dendrogram_approx.png'):
@@ -527,8 +533,10 @@ class multiplex_red:
                     "'force=True'")
             else:
                 self.reduce_approx()
+
+        plt.close('all')
         dendrogram(self.Z_approx, no_plot=False)
-        matplotlib.pyplot.savefig(saveas)
+        plt.savefig(saveas)
 
     def dump_partitions(self):
         part = zip(self.q_vals, self.cuts)
